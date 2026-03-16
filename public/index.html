@@ -390,14 +390,6 @@ function pickMole(){
   usedMoles.push(MOLES.indexOf(chosen));return chosen;
 }
 
-`;hEl.style.boxShadow=`3px 3px 0 ${C.brown}`;
-    const peek=document.getElementById('peek'+i);
-    const empty=document.getElementById('e'+i);
-    if(peek)peek.style.display='flex';
-    if(empty)empty.style.display='none';
-  }
-}
-
 function beginRound(){
   running=true;rW=0;rM=0;spawned=0;roundMistakes=[];
   molesTotal=12+round*3;dur=Math.max(9000,15000-round*800);
