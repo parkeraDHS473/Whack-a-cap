@@ -317,9 +317,9 @@ function showStart(){
     <div style="width:90px;flex-shrink:0">${MOLE_LANDING}</div>
     <div>
       <h2 style="margin:0 0 6px;color:${C.gold};text-shadow:1px 1px 0 ${C.brown}">Whack-a-Cap! 🔨</h2>
-      <p style="color:${C.card};font-size:13px;margin:0 0 8px">Starts with 4 holes, expands to 6! Cap peeks out first, then the sentence appears.</p>
-      <div style="background:${C.surface};border:1px solid ${C.gold};border-radius:6px;padding:8px 12px;font-size:12px;line-height:1.5;color:${C.warnY};font-style:italic">
-        <b>Tip:</b> Cards warm up as time runs out!
+      <p style="color:${C.card};font-size:13px;margin:0 0 8px">Each sentence has exactly one capitalization error. Click the word that should be capitalized — or shouldn't be! The moles will peek out of each hole just before the sentence appears. Start with 5 holes and race the clock before the card turns red and disappears!</p>
+      <div style="background:${C.surface};border:1px solid ${C.gold};border-radius:6px;padding:8px 12px;font-size:12px;line-height:1.5;color:#f5e6c8;font-style:italic">
+        <b>Tip:</b> Watch the card color — yellow means hurry, orange means faster, red means NOW! Correct answers build your streak and boost your score.
       </div>
     </div>
   </div>
@@ -392,7 +392,7 @@ function pickMole(){
 
 function beginRound(){
   running=true;rW=0;rM=0;spawned=0;roundMistakes=[];
-  molesTotal=12+round*3;dur=Math.max(9000,15000-round*800);
+  molesTotal=12+round*3;dur=Math.max(12000,18000-round*800);
 
   // Reset all 9 holes to empty hole image
   for(let i=0;i<9;i++){
@@ -469,9 +469,9 @@ function fillHole(hi){
     });
     if(contentEl)contentEl.style.display='block';
     const rem=dur-PEEK_DELAY-1500;
-    ac.tY=setTimeout(()=>{if(active.includes(ac)){hEl.style.background=C.warnY;hEl.style.border=`2px solid ${C.gold}`;}},Math.max(0,rem-9000));
-    ac.tO=setTimeout(()=>{if(active.includes(ac)){hEl.style.background=C.warnO;hEl.style.border=`2px solid ${C.orange}`;}},Math.max(0,rem-6000));
-    ac.tR=setTimeout(()=>{if(active.includes(ac)){hEl.style.background=C.warnR;hEl.style.border=`2px solid ${C.brown}`;}},Math.max(0,rem-3000));
+    ac.tY=setTimeout(()=>{if(active.includes(ac)){hEl.style.background=C.warnY;hEl.style.border=`2px solid ${C.gold}`;}},Math.max(0,rem-10000));
+    ac.tO=setTimeout(()=>{if(active.includes(ac)){hEl.style.background=C.warnO;hEl.style.border=`2px solid ${C.orange}`;}},Math.max(0,rem-7000));
+    ac.tR=setTimeout(()=>{if(active.includes(ac)){hEl.style.background=C.warnR;hEl.style.border=`2px solid ${C.brown}`;}},Math.max(0,rem-4000));
   },1500+PEEK_DELAY);
 
   ac.ht=setTimeout(()=>escape(hi,ac),dur);
