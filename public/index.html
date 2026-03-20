@@ -281,7 +281,31 @@ const MOLES=[
 {"cat":"Proper Nouns","words":["Next","semester","I","am","taking","Creative","Writing","and","Ceramics."],"err":[8],"fix":["ceramics"],"explain":"Only capitalize a course name when it is a specific official class title. If ceramics is used as a general subject here it should not be capitalized."},
 {"cat":"Proper Nouns","words":["My","schedule","includes","world","History","and","band","this","semester."],"err":[3],"fix":["World"],"explain":"World History is a specific course name and must be capitalized."},
 {"cat":"Proper Nouns","words":["I","need","to","finish","my","project","for","introduction","to","engineering."],"err":[7],"fix":["Introduction"],"explain":"Introduction to Engineering is a specific course name and must be capitalized."},
-{"cat":"Proper Nouns","words":["She","is","taking","spanish","2","and","loves","it."],"err":[3],"fix":["Spanish"],"explain":"Language courses like Spanish 2 are always capitalized because language names are proper nouns."}
+{"cat":"Proper Nouns","words":["She","is","taking","spanish","2","and","loves","it."],"err":[3],"fix":["Spanish"],"explain":"Language courses like Spanish 2 are always capitalized because language names are proper nouns."},{"cat":"Family Relationships","words":["Can","you","ask","mom","if","we","can","go","to","the","movies","tonight?"],"err":[3],"fix":["Mom"],"explain":"Mom is capitalized when used as a name in place of a proper name. Here it is used directly as a name, not after a possessive."},
+{"cat":"Family Relationships","words":["She","told","her","dad","about","the","field","trip","next","week."],"err":[3],"fix":["dad"],"explain":"Family titles are not capitalized when used after a possessive word like her."},
+{"cat":"Family Relationships","words":["I","called","my","grandma","every","Sunday","after","church."],"err":[3],"fix":["grandma"],"explain":"Family titles are not capitalized when used after a possessive word like my."},
+{"cat":"Family Relationships","words":["My","grandpa","taught","me","how","to","fish","last","summer."],"err":[1],"fix":["grandpa"],"explain":"Family titles are not capitalized when used after a possessive word like my."},
+{"cat":"Family Relationships","words":["My","aunt","makes","the","best","pie","at","Thanksgiving."],"err":[1],"fix":["aunt"],"explain":"Family titles are not capitalized when used after a possessive word like my."},
+{"cat":"Family Relationships","words":["My","uncle","lives","in","Texas","and","visits","every","summer."],"err":[1],"fix":["uncle"],"explain":"Family titles are not capitalized when used after a possessive word like my."},
+{"cat":"Family Relationships","words":["She","called","her","mom","and","dad","as","soon","as","she","arrived."],"err":[3,5],"fix":["mom","dad"],"explain":"Family titles like mom and dad are not capitalized when used after a possessive word like her."},
+{"cat":"Family Relationships","words":["My","brother","plays","on","the","varsity","basketball","team","this","year."],"err":[1],"fix":["brother"],"explain":"Family titles are not capitalized when used after a possessive word like my."},
+{"cat":"Family Relationships","words":["His","grandma","taught","him","how","to","cook","traditional","recipes."],"err":[1],"fix":["grandma"],"explain":"Family titles are not capitalized when used after a possessive word like his."},
+{"cat":"Family Relationships","words":["I","reminded","my","Sister","that","practice","starts","at","four","o'clock."],"err":[3],"fix":["sister"],"explain":"Family titles are not capitalized when used after a possessive word like my."},
+{"cat":"Religions","words":["My","family","attends","a","christian","church","every","Sunday","morning."],"err":[4],"fix":["Christian"],"explain":"Names of religions and their followers, like Christian, are always capitalized."},
+{"cat":"Religions","words":["We","studied","the","islamic","faith","in","our","world","history","class."],"err":[3],"fix":["Islamic"],"explain":"Names of religions and their adjectives, like Islamic, are always capitalized."},
+{"cat":"Religions","words":["My","friend","celebrates","jewish","holidays","with","her","family","each","year."],"err":[3],"fix":["Jewish"],"explain":"Names of religions and their adjectives, like Jewish, are always capitalized."},
+{"cat":"Religions","words":["We","learned","about","buddhism","in","our","world","cultures","class."],"err":[3],"fix":["Buddhism"],"explain":"Names of religions, like Buddhism, are always capitalized."},
+{"cat":"Religions","words":["My","neighbor","follows","the","teachings","of","hinduism","in","her","daily","life."],"err":[6],"fix":["Hinduism"],"explain":"Names of religions, like Hinduism, are always capitalized."},
+{"cat":"Religions","words":["The","class","read","passages","from","the","bible","to","understand","the","context."],"err":[6],"fix":["Bible"],"explain":"Names of sacred texts, like the Bible, are always capitalized."},
+{"cat":"Religions","words":["She","read","a","chapter","from","the","quran","during","the","presentation."],"err":[6],"fix":["Quran"],"explain":"Names of sacred texts, like the Quran, are always capitalized."},
+{"cat":"Religions","words":["My","friend","fasts","during","ramadan","every","year","with","his","family."],"err":[4],"fix":["Ramadan"],"explain":"Names of religious holidays and observances, like Ramadan, are always capitalized."},
+{"cat":"Religions","words":["We","learned","about","the","Five","Pillars","of","islam","in","class."],"err":[7],"fix":["Islam"],"explain":"Names of religions, like Islam, are always capitalized."},
+{"cat":"Religions","words":["My","grandfather","was","a","devout","catholic","who","attended","Mass","daily."],"err":[5],"fix":["Catholic"],"explain":"Names of religious groups and their followers, like Catholic, are always capitalized."},
+{"cat":"Religions","words":["She","studies","the","torah","every","week","with","her","rabbi."],"err":[3],"fix":["Torah"],"explain":"Names of sacred texts, like the Torah, are always capitalized."},
+{"cat":"Religions","words":["The","students","learned","about","the","protestant","Reformation","in","history","class."],"err":[5],"fix":["Protestant"],"explain":"Names of religious groups, like Protestant, are always capitalized."},
+{"cat":"Religions","words":["My","cousin","converted","to","islam","after","years","of","study."],"err":[4],"fix":["Islam"],"explain":"Names of religions, like Islam, are always capitalized."},
+{"cat":"Religions","words":["We","discussed","the","role","of","confucianism","in","ancient","Chinese","culture."],"err":[5],"fix":["Confucianism"],"explain":"Names of religions and philosophies, like Confucianism, are always capitalized."},
+{"cat":"Religions","words":["My","friend","is","a","practicing","muslim","who","prays","five","times","a","day."],"err":[5],"fix":["Muslim"],"explain":"Names of religious followers, like Muslim, are always capitalized."}
 ];
 
 // ── Game State ───────────────────────────────────────────
@@ -459,7 +483,7 @@ function pickMole(){
 
 function beginRound(){
   running=true;rW=0;rM=0;spawned=0;roundMistakes=[];
-  molesTotal=12+round*3;dur=Math.max(12000,18000-round*800);
+  molesTotal=12+round*3;dur=Math.max(16000,22000-round*800);
 
   // Reset all 9 holes to empty hole image
   for(let i=0;i<9;i++){
@@ -536,9 +560,9 @@ function fillHole(hi){
     });
     if(contentEl)contentEl.style.display='block';
     const rem=dur-PEEK_DELAY-1500;
-    ac.tY=setTimeout(()=>{if(active.includes(ac)){hEl.style.background=C.warnY;hEl.style.border=`2px solid ${C.gold}`;}},Math.max(0,rem-10000));
-    ac.tO=setTimeout(()=>{if(active.includes(ac)){hEl.style.background=C.warnO;hEl.style.border=`2px solid ${C.orange}`;}},Math.max(0,rem-7000));
-    ac.tR=setTimeout(()=>{if(active.includes(ac)){hEl.style.background=C.warnR;hEl.style.border=`2px solid ${C.brown}`;}},Math.max(0,rem-4000));
+    ac.tY=setTimeout(()=>{if(active.includes(ac)){hEl.style.background=C.warnY;hEl.style.border=`2px solid ${C.gold}`;}},Math.max(0,rem-11000));
+    ac.tO=setTimeout(()=>{if(active.includes(ac)){hEl.style.background=C.warnO;hEl.style.border=`2px solid ${C.orange}`;}},Math.max(0,rem-8000));
+    ac.tR=setTimeout(()=>{if(active.includes(ac)){hEl.style.background=C.warnR;hEl.style.border=`2px solid ${C.brown}`;}},Math.max(0,rem-5000));
   },1500+PEEK_DELAY);
 
   ac.ht=setTimeout(()=>escape(hi,ac),dur);
