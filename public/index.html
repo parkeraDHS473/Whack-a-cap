@@ -308,7 +308,7 @@ const MOLES=[
 {"cat":"Religions","words":["My","friend","is","a","practicing","muslim","who","prays","five","times","a","day."],"err":[5],"fix":["Muslim"],"explain":"Names of religious followers, like Muslim, are always capitalized."},{"cat":"Proper Nouns","words":["My","friend","from","texas","visited","the","Statue","of","Liberty","last","summer."],"err":[3],"fix":["Texas"],"explain":"Texas is the name of a specific state and must always be capitalized."},
 {"cat":"Historical Events","words":["We","studied","the","Civil","War","and","the","reconstruction","Era","in","American","History","class."],"err":[7],"fix":["Reconstruction"],"explain":"The Reconstruction Era is the proper name of a historical period and must be capitalized."},
 {"cat":"Family Relationships","words":["Coach","Williams","told","uncle","David","that","I","made","the","Dexter","High","School","team."],"err":[3],"fix":["Uncle"],"explain":"Uncle is capitalized when used directly before a person's name as a title."},
-{"cat":"Titles","words":["My","English","teacher","assigned","the","old","Man","and","the","Sea","by","Ernest","Hemingway."],"err":[5],"fix":["The"],"explain":"The first word of a title is always capitalized, even if it is a small word like the."},
+{"cat":"Titles","words":["My","English","teacher","assigned","the","old","Man","and","the","Sea","by","Ernest","Hemingway."],"err":[4],"fix":["The"],"explain":"The first word of a title is always capitalized, even if it is a small word like the."},
 {"cat":"Family Relationships","words":["On","Christmas","morning,","my","Sister","opened","a","gift","from","Aunt","Linda."],"err":[4],"fix":["sister"],"explain":"Family titles are not capitalized when used after a possessive word like my."},
 {"cat":"Proper Nouns","words":["The","pacific","Ocean","borders","the","West","Coast","of","the","United","States."],"err":[1],"fix":["Pacific"],"explain":"Pacific Ocean is the proper name of a specific ocean. Pacific must be capitalized."},
 {"cat":"Days & Holidays","words":["My","family","celebrates","Thanksgiving","and","Christmas","every","november","in","Michigan."],"err":[7],"fix":["November"],"explain":"Months of the year are always capitalized."},
@@ -329,7 +329,7 @@ const MOLES=[
 {"cat":"Proper Nouns","words":["We","visited","the","grand","Canyon","and","the","Rocky","Mountains","on","our","road","trip."],"err":[3],"fix":["Grand"],"explain":"Grand Canyon is the proper name of a specific landmark. Grand must be capitalized."},
 {"cat":"Family Relationships","words":["Dad","drove","me","to","practice","while","my","mom","took","my","Sister","to","dance","class."],"err":[11],"fix":["sister"],"explain":"Family titles are not capitalized when used after a possessive word like my."},
 {"cat":"Proper Nouns","words":["My","American","History","class","studied","the","united","Nations","and","its","role","in","world","peace."],"err":[6],"fix":["United"],"explain":"United Nations is the proper name of an international organization. United must be capitalized."},
-{"cat":"Titles","words":["I","read","The","Hunger","Games","and","the","hobbit","over","winter","break."],"err":[7],"fix":["The"],"explain":"The first word of a title is always capitalized, even if it is a small word like the."},
+{"cat":"Titles","words":["I","read","The","Hunger","Games","and","the","hobbit","over","winter","break."],"err":[6,7],"fix":["The","Hobbit"],"explain":"The first word of a title is always capitalized, even if it is a small word like the."},
 {"cat":"Proper Nouns","words":["The","Mississippi","River","flows","through","the","Midwest","and","into","the","gulf","of","Mexico."],"err":[10],"fix":["Gulf"],"explain":"Gulf of Mexico is the proper name of a specific body of water. Gulf must be capitalized."},
 {"cat":"Titles Before Names","words":["My","class","read","a","speech","by","President","Lincoln","and","a","letter","by","general","Grant."],"err":[12],"fix":["General"],"explain":"General is capitalized when used directly before a specific name like Grant."},
 {"cat":"Religions","words":["She","studied","Buddhism","and","hinduism","for","her","World","Cultures","project."],"err":[3],"fix":["Hinduism"],"explain":"Names of religions like Hinduism are always capitalized."},
@@ -705,25 +705,26 @@ function fillHole(hi){
     if(hEl){hEl.style.background=C.card;hEl.style.border=`2px solid ${C.gold}`;hEl.style.boxShadow=`3px 3px 0 ${C.brown}`;hEl.style.alignItems='flex-start';hEl.style.justifyContent='flex-start';}
     document.getElementById('cat'+hi).textContent=m.cat;
     const sentEl=document.getElementById('s'+hi);sentEl.innerHTML='';
-    // Detect title words for italics — stop at "by" to exclude author names
-    let titleStart=-1, titleEnd=9999;
-    const titleTriggers=['novel','poem','song','play','book','series','assigned','read','borrowed','listening','studied','analyzed','titled','called'];
+const TITLE_RANGES={
+  "the old Man and the":[[4, 9]],
+  "We read The Great Gatsby":[[2, 4], [6, 9]],
+  "I read The Hunger Games":[[2, 4], [6, 7]],
+  "In AP Literature, we read":[[6, 8], [10, 13]],
+  "In English 9, we read":[[5, 6], [8, 11]],
+  "In AP Literature, we analyzed":[[6, 8], [10, 14]],
+  "In my AP Literature class,":[[8, 10], [11, 13], [14, 17], [19, 22]],
+  "After finishing The Hunger Games":[[2, 4], [10, 12], [19, 20]],
+};
+    // Detect italic ranges for Titles questions
+    let italicRanges=[];
     if(m.cat==='Titles'){
-      for(let ti=0;ti<m.words.length;ti++){
-        const wl=m.words[ti].toLowerCase().replace(/[^a-z]/g,'');
-        if(titleTriggers.includes(wl)){titleStart=ti+1;break;}
-      }
-      if(titleStart===-1) titleStart=0;
-      // Find "by" after the title start — everything from "by" onward is not italicized
-      for(let ti=titleStart;ti<m.words.length;ti++){
-        const wl=m.words[ti].toLowerCase().replace(/[^a-z]/g,'');
-        if(wl==='by'){titleEnd=ti;break;}
-      }
+      const sentKey=m.words.slice(0,5).join(' ');
+      if(TITLE_RANGES[sentKey]) italicRanges=TITLE_RANGES[sentKey];
     }
     m.words.forEach((w,i)=>{
       const sp=document.createElement('span');
       sp.textContent=w+' ';
-      const isTitle=m.cat==='Titles'&&titleStart>=0&&i>=titleStart&&i<titleEnd;
+      const isTitle=italicRanges.some(r=>i>=r[0]&&i<=r[1]);
       sp.style.cssText=`cursor:inherit;padding:2px 4px;border-radius:3px;display:inline;font-family:Georgia,serif${isTitle?';font-style:italic':''}`;
       sp.onmouseover=()=>{if(!sp.dataset.done){sp.style.background='#fde047';sp.style.borderRadius='4px';sp.style.boxShadow='0 2px 0 #ca8a04';}};
       sp.onmouseout=()=>{if(!sp.dataset.done){sp.style.background='';sp.style.boxShadow='';}};
