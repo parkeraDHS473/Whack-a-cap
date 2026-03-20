@@ -639,6 +639,23 @@ function pickMole(){
 
 function beginRound(){
   running=true;rW=0;rM=0;spawned=0;roundMistakes=[];
+  // Start round timer bar
+  const roundDur=molesTotal*(dur/1000)*1000; // rough estimate
+  const roundStart=Date.now();
+  const roundTotalMs=120000; // 2 min round max display
+  if(window.roundTimerIv) clearInterval(window.roundTimerIv);
+  window.roundTimerIv=setInterval(()=>{
+    const bar=document.getElementById('round-timer-bar');
+    if(!bar||!running){clearInterval(window.roundTimerIv);return;}
+    const elapsed=Date.now()-roundStart;
+    const pct=Math.max(0,100-(elapsed/roundTotalMs*100));
+    bar.style.width=pct+'%';
+    // Color shift as time runs out
+    if(pct>50) bar.style.background='linear-gradient(90deg,#22c55e,#c9941a)';
+    else if(pct>25) bar.style.background='linear-gradient(90deg,#c9941a,#e8a040)';
+    else bar.style.background='linear-gradient(90deg,#e8a040,#ef4444)';
+    if(pct<=0) clearInterval(window.roundTimerIv);
+  },200);
   molesTotal=12+round*3;dur=Math.max(27000,33000-round*800);
 
   // Reset all 9 holes to empty hole image
@@ -687,7 +704,7 @@ function fillHole(hi){
   const contentEl=document.getElementById('c'+hi);
 
   // Show empty hole first (already showing, but reset style)
-  if(hEl){hEl.style.background='transparent';hEl.style.border='none';hEl.style.boxShadow='none';}
+  if(hEl){hEl.style.background='transparent';hEl.style.border='none';hEl.style.boxShadow='none';hEl.style.animation='';}
 
   const ac={hi,m};
 
@@ -695,7 +712,7 @@ function fillHole(hi){
   ac.emptyT=setTimeout(()=>{
     if(!active.includes(ac))return;
     if(emptyEl)emptyEl.style.display='none';
-    if(peekEl)peekEl.style.display='flex';
+    if(peekEl){peekEl.style.display='flex';peekEl.style.animation='peekBounce 0.4s ease forwards';}
   },1500);
 
   // After 1.5s + 3s (PEEK_DELAY) reveal sentence
@@ -755,9 +772,12 @@ function onWord(idx,m,hi,sp){
     sesStats[cat].correct++;const pts=10+Math.min(streak*3,25);score+=pts;streak++;rW++;
     m.err.forEach((ei,j)=>{if(spans[ei]){spans[ei].style.background='#dcfce7';spans[ei].style.color='#14532d';spans[ei].style.fontWeight='bold';spans[ei].textContent=m.fix[j]+' ';}});
     hEl.style.background='#22c55e';hEl.style.border='3px solid #15803d';hEl.style.boxShadow='3px 3px 0 #14532d';
+    hEl.style.animation='whackCorrect 0.35s ease';
     clearAc(ac);
-    
-    setTimeout(()=>clearHole(hi,ac),700);
+    setTimeout(()=>{
+      hEl.style.animation='cardFadeOut 0.3s ease forwards';
+      setTimeout(()=>{hEl.style.animation='';clearHole(hi,ac);},300);
+    },380);
   }else{
     lives--;streak=0;rM++;
     const correct=m.words.map((w,i)=>{const ei=m.err.indexOf(i);return ei>=0?m.fix[ei]:w;}).join(' ');
@@ -765,6 +785,10 @@ function onWord(idx,m,hi,sp){
     allMistakes.push(roundMistakes[roundMistakes.length-1]);
     sp.style.background='#fca5a5';sp.style.color='#7f1d1d';sp.style.fontWeight='bold';
     hEl.style.background='#ef4444';hEl.style.border='3px solid #991b1b';
+    hEl.style.animation='whackWrong 0.4s ease';
+    setTimeout(()=>{hEl.style.animation='';},400);
+    hEl.style.animation='whackWrong 0.4s ease';
+    setTimeout(()=>{hEl.style.animation='';},400);
     if(lives<=0){stopGame();setTimeout(endGame,600);return;}
     setTimeout(()=>{
       m.err.forEach(ei=>{if(spans[ei]){spans[ei].style.background='#fef9c3';spans[ei].style.color='#7f1d1d';spans[ei].style.fontWeight='bold';}});
@@ -775,7 +799,22 @@ function onWord(idx,m,hi,sp){
 }
 
 function clearAc(ac){clearTimeout(ac.emptyT);clearTimeout(ac.peekT);clearTimeout(ac.ht);clearTimeout(ac.tY);clearTimeout(ac.tO);clearTimeout(ac.tR);}
-function escape(hi,ac){if(!active.includes(ac))return;streak=0;rM++;updateHUD();clearAc(ac);clearHole(hi,ac);}
+function escape(hi,ac){
+  if(!active.includes(ac))return;streak=0;rM++;updateHUD();clearAc(ac);
+  // Animate slide down before clearing
+  const hEl=document.getElementById('h'+hi);
+  const peekEl=document.getElementById('peek'+hi);
+  const contentEl=document.getElementById('c'+hi);
+  if(contentEl&&contentEl.style.display!=='none'){
+    contentEl.style.animation='moleSlideDown 0.35s ease forwards';
+    setTimeout(()=>{contentEl.style.animation='';clearHole(hi,ac);},350);
+  } else if(peekEl&&peekEl.style.display!=='none'){
+    peekEl.style.animation='moleSlideDown 0.35s ease forwards';
+    setTimeout(()=>{peekEl.style.animation='';clearHole(hi,ac);},350);
+  } else {
+    clearHole(hi,ac);
+  }
+}
 function clearHole(hi,ac){
   clearAc(ac);active=active.filter(a=>a!==ac);
   showEmpty(hi);
@@ -786,7 +825,7 @@ function clearHole(hi,ac){
     },800);
   }
 }
-function stopGame(){running=false;if(spawnIv){clearInterval(spawnIv);spawnIv=null;}active.forEach(ac=>clearAc(ac));active=[];}
+function stopGame(){running=false;if(spawnIv){clearInterval(spawnIv);spawnIv=null;}if(window.roundTimerIv){clearInterval(window.roundTimerIv);window.roundTimerIv=null;}active.forEach(ac=>clearAc(ac));active=[];}
 
 function mistakeCards(list){
   if(!list.length)return`<p style="color:${C.green};font-weight:bold">✓ No mistakes!</p>`;
@@ -801,6 +840,9 @@ function mistakeCards(list){
 
 function endRound(){
   if(!running)return;running=false;
+  if(window.roundTimerIv){clearInterval(window.roundTimerIv);window.roundTimerIv=null;}
+  const bar=document.getElementById('round-timer-bar');
+  if(bar){bar.style.width='0%';}
   [...active].forEach(ac=>{clearAc(ac);clearHole(ac.hi,ac);});active=[];
   const tot=rW+rM;
   const ov=document.getElementById('overlay');
