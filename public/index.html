@@ -705,8 +705,8 @@ function fillHole(hi){
     if(hEl){hEl.style.background=C.card;hEl.style.border=`2px solid ${C.gold}`;hEl.style.boxShadow=`3px 3px 0 ${C.brown}`;hEl.style.alignItems='flex-start';hEl.style.justifyContent='flex-start';}
     document.getElementById('cat'+hi).textContent=m.cat;
     const sentEl=document.getElementById('s'+hi);sentEl.innerHTML='';
-    // Detect title words for italics
-    let titleStart=-1;
+    // Detect title words for italics — stop at "by" to exclude author names
+    let titleStart=-1, titleEnd=9999;
     const titleTriggers=['novel','poem','song','play','book','series','assigned','read','borrowed','listening','studied','analyzed','titled','called'];
     if(m.cat==='Titles'){
       for(let ti=0;ti<m.words.length;ti++){
@@ -714,14 +714,19 @@ function fillHole(hi){
         if(titleTriggers.includes(wl)){titleStart=ti+1;break;}
       }
       if(titleStart===-1) titleStart=0;
+      // Find "by" after the title start — everything from "by" onward is not italicized
+      for(let ti=titleStart;ti<m.words.length;ti++){
+        const wl=m.words[ti].toLowerCase().replace(/[^a-z]/g,'');
+        if(wl==='by'){titleEnd=ti;break;}
+      }
     }
     m.words.forEach((w,i)=>{
       const sp=document.createElement('span');
       sp.textContent=w+' ';
-      const isTitle=m.cat==='Titles'&&titleStart>=0&&i>=titleStart;
+      const isTitle=m.cat==='Titles'&&titleStart>=0&&i>=titleStart&&i<titleEnd;
       sp.style.cssText=`cursor:inherit;padding:2px 4px;border-radius:3px;display:inline;font-family:Georgia,serif${isTitle?';font-style:italic':''}`;
-      sp.onmouseover=()=>{if(!sp.dataset.done){sp.style.background='#fde047';sp.style.borderRadius='4px';sp.style.boxShadow='0 2px 0 #ca8a04';sp.style.fontWeight='bold';}};
-      sp.onmouseout=()=>{if(!sp.dataset.done){sp.style.background='';sp.style.boxShadow='';sp.style.fontWeight='';}};
+      sp.onmouseover=()=>{if(!sp.dataset.done){sp.style.background='#fde047';sp.style.borderRadius='4px';sp.style.boxShadow='0 2px 0 #ca8a04';}};
+      sp.onmouseout=()=>{if(!sp.dataset.done){sp.style.background='';sp.style.boxShadow='';}};
       sp.onclick=()=>onWord(i,m,hi,sp);
       sentEl.appendChild(sp);
     });
