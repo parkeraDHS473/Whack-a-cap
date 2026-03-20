@@ -639,7 +639,7 @@ function pickMole(){
 
 function beginRound(){
   running=true;rW=0;rM=0;spawned=0;roundMistakes=[];
-  molesTotal=12+round*3;dur=Math.max(22000,28000-round*800);
+  molesTotal=12+round*3;dur=Math.max(27000,33000-round*800);
 
   // Reset all 9 holes to empty hole image
   for(let i=0;i<9;i++){
@@ -705,10 +705,21 @@ function fillHole(hi){
     if(hEl){hEl.style.background=C.card;hEl.style.border=`2px solid ${C.gold}`;hEl.style.boxShadow=`3px 3px 0 ${C.brown}`;hEl.style.alignItems='flex-start';hEl.style.justifyContent='flex-start';}
     document.getElementById('cat'+hi).textContent=m.cat;
     const sentEl=document.getElementById('s'+hi);sentEl.innerHTML='';
+    // Detect title words for italics
+    let titleStart=-1;
+    const titleTriggers=['novel','poem','song','play','book','series','assigned','read','borrowed','listening','studied','analyzed','titled','called'];
+    if(m.cat==='Titles'){
+      for(let ti=0;ti<m.words.length;ti++){
+        const wl=m.words[ti].toLowerCase().replace(/[^a-z]/g,'');
+        if(titleTriggers.includes(wl)){titleStart=ti+1;break;}
+      }
+      if(titleStart===-1) titleStart=0;
+    }
     m.words.forEach((w,i)=>{
       const sp=document.createElement('span');
       sp.textContent=w+' ';
-      sp.style.cssText=`cursor:inherit;padding:2px 4px;border-radius:3px;display:inline;font-family:Georgia,serif`;
+      const isTitle=m.cat==='Titles'&&titleStart>=0&&i>=titleStart;
+      sp.style.cssText=`cursor:inherit;padding:2px 4px;border-radius:3px;display:inline;font-family:Georgia,serif${isTitle?';font-style:italic':''}`;
       sp.onmouseover=()=>{if(!sp.dataset.done){sp.style.background='#fde047';sp.style.borderRadius='4px';sp.style.boxShadow='0 2px 0 #ca8a04';sp.style.fontWeight='bold';}};
       sp.onmouseout=()=>{if(!sp.dataset.done){sp.style.background='';sp.style.boxShadow='';sp.style.fontWeight='';}};
       sp.onclick=()=>onWord(i,m,hi,sp);
