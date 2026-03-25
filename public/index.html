@@ -702,7 +702,14 @@ function beginRound(){
   startSet.forEach(i=>fillHole(i));
 
   spawnIv=setInterval(()=>{
-    if(spawned>=molesTotal){clearInterval(spawnIv);spawnIv=null;setTimeout(()=>{if(running)endRound();},dur+500);return;}
+    if(spawned>=molesTotal){
+      // All questions spawned — wait for active cards to clear then end round
+      if(active.length===0){
+        clearInterval(spawnIv);spawnIv=null;
+        if(running)endRound();
+      }
+      return;
+    }
     // Count active holes (those in 'active' array)
     const activeCount=active.length;
     const needed=5-activeCount;
